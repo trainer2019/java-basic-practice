@@ -8,6 +8,13 @@ import java.nio.file.Paths;
 import java.sql.Time;
 import java.util.List;
 
+/**
+ * アルバイト従業員一覧と勤怠履歴を照合してお給料を計算します。
+ * ポイントは次の3点あります。
+ * ・ダブルループという、繰り返し処理を二重に行う手法を使ってファイルを照合します。
+ * ・給与計算のような複雑な数値処理を行う場合はBigDecimalを使うほうが良いです。
+ * ・DateやTimeのような日時に関するデータはlong型で扱うと計算が行いやすくなります。
+ */
 public class CalculatePartTimerWage {
     private static final String SEPARATOR = ",";
     private static final String PATH_PART_TIMERS = "アルバイト従業員一覧ファイル(PartTimers.csv)のパスを設定して下さい。";

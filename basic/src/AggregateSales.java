@@ -7,8 +7,7 @@ import java.util.List;
 
 /**
  * 売上ファイルから売上データを取得して合計金額を集計します。
- * コマンドライン引数で集計する商品名を指定することもできます。
- * 売上ファイルはプロジェクト内の \sales\sales.csv です。
+ * ポイントは、ファイルから1列ずつデータを読み込んでString#splitで分割して処理しやすくすることです。
  */
 public class AggregateSales {
     private static final String ITEM_ALL = "全商品";
