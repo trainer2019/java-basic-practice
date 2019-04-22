@@ -19,7 +19,7 @@ public class CalculatePartTimerWage {
     private static final String SEPARATOR = ",";
     private static final String PATH_PART_TIMERS = "アルバイト従業員一覧ファイル(PartTimers.csv)のパスを設定して下さい。";
     private static final String PATH_ATTENDANCES = "勤務履歴ファイル(Attendances.csv)のパスを設定して下さい。";
-    private static final long ONE_HOUR = 1000 * 60 * 60;   // ミリ秒で1時間
+    private static final long ONE_MINUTE = 1000 * 60;   // ミリ秒で1分
 
     public static void main(String[] args) {
 
@@ -66,20 +66,18 @@ public class CalculatePartTimerWage {
                     continue;
                 }
 
-                // 勤務開始時間と退勤時間からミリ秒単位の労働時間を計算する
+                // 勤務開始時間と退勤時間から分単位の労働時間を計算する
                 Time startTime = Time.valueOf(attendanceDetail[2]);
                 Time finishTime = Time.valueOf(attendanceDetail[3]);
                 long workTimeByMillisecond = finishTime.getTime() - startTime.getTime();
-                // ミリ秒単位から時間単位に直す
-                BigDecimal workTimeByHour = BigDecimal.valueOf(workTimeByMillisecond / ONE_HOUR);
+                long workTimeByMinute = workTimeByMillisecond / ONE_MINUTE;
 
-                /*
-                 * 時給 × 労働時間で1日分の給与額を計算する
-                 *
-                 * 厳密には時給が1分単位で発生するのか？5分単位で発生するか？等を考慮して数値処理を行う必要があります。
-                 * BigDecimalは厳密な数値処理を行うための機能が豊富に備わっています。
-                 */
-                BigDecimal dailyWage = partTimerWage.multiply(workTimeByHour).setScale(0, RoundingMode.UP);
+                // 勤務時間を時間と分の両方で算出する
+                BigDecimal workHour = new BigDecimal(workTimeByMinute / 60);
+                BigDecimal workMinute = new BigDecimal(workTimeByMinute % 60).divide(new BigDecimal(60));
+
+                // 時給 × 労働時間で1日分の給与額を計算する
+                BigDecimal dailyWage = workHour.multiply(partTimerWage).add(workMinute.multiply(partTimerWage)).setScale(0, RoundingMode.DOWN);
 
                 // 合計金額に加算
                 totalWage = totalWage.add(dailyWage);
